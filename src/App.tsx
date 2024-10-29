@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { useRecoilState } from "recoil";
-import { countryListState, ICountry } from "./atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { countryListState, countrySelector, ICountry } from "./atom";
 import styled from "styled-components";
 import List from "./List";
 
@@ -10,6 +10,7 @@ interface IForm {
 
 export default function App() {
   const [countryList, setCountryList] = useRecoilState(countryListState);
+  const { favorite, visited, wishlist } = useRecoilValue(countrySelector);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>();
   const onSubmit = (data: IForm) => {
     const newCountry: ICountry = {
@@ -23,7 +24,6 @@ export default function App() {
         wishlist: [newCountry, ...prev["wishlist"]]
       }
     })
-    console.log(countryList)
     setValue("country", "");
   }
   return (
@@ -43,15 +43,15 @@ export default function App() {
         <p>{errors.country?.message}</p>
         <button>가자!</button>
       </form>
-      {countryList["wishlist"].map((country) => (
+      {wishlist.map((country) => (
         <List key={country.id} {...country} />
       ))}
       <h2>내가 가본 나라들</h2>
-      {countryList["visited"].map((country) => (
+      {visited.map((country) => (
         <List key={country.id} {...country} />
       ))}
       <h2>내가 좋아하는 나라들</h2>
-      {countryList["favorite"].map((country) => (
+      {favorite.map((country) => (
         <List key={country.id} {...country} />
       ))}
     </Container>

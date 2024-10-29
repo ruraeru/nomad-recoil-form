@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 const localStorageEffect =
   (key: string) =>
@@ -33,4 +33,17 @@ export const countryListState = atom<ICountryState>({
     favorite: [],
   },
   effects: [localStorageEffect("countryList")],
+});
+
+export const countrySelector = selector({
+  key: "countrySelector",
+  get: ({ get }) => {
+    const countrys = get(countryListState);
+
+    return {
+      wishlist: countrys["wishlist"],
+      visited: countrys["visited"],
+      favorite: countrys["favorite"],
+    };
+  },
 });
