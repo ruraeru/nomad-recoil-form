@@ -65,9 +65,10 @@ export default function List({ id, text, category }: ICountry) {
     )
 }
 const Container = styled.ul`
-    list-style: none;
     display: flex;
-    `;
+    justify-content: flex-start;
+    padding: 30px;
+`;
 
 const Wrapper = styled.li`
     display: flex;

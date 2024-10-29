@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { countryListState, countrySelector, ICountry } from "./atom";
 import styled from "styled-components";
 import List from "./List";
@@ -9,7 +9,7 @@ interface IForm {
 }
 
 export default function App() {
-  const [countryList, setCountryList] = useRecoilState(countryListState);
+  const setCountryList = useSetRecoilState(countryListState);
   const { favorite, visited, wishlist } = useRecoilValue(countrySelector);
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<IForm>();
   const onSubmit = (data: IForm) => {
@@ -28,45 +28,64 @@ export default function App() {
   }
   return (
     <Container>
-      <h2>내가 가고싶은 나라들</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          {...register("country", {
-            required: {
-              value: true,
-              message: "🤮 required"
-            }
-          })}
-          name="country"
-          placeholder="이름"
-        />
-        <p>{errors.country?.message}</p>
-        <button>가자!</button>
-      </form>
-      {wishlist.map((country) => (
-        <List key={country.id} {...country} />
-      ))}
-      <h2>내가 가본 나라들</h2>
-      {visited.map((country) => (
-        <List key={country.id} {...country} />
-      ))}
-      <h2>내가 좋아하는 나라들</h2>
-      {favorite.map((country) => (
-        <List key={country.id} {...country} />
-      ))}
+      <div>
+        <h1>내가 가고싶은 나라들</h1>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <input
+            {...register("country", {
+              required: {
+                value: true,
+                message: "🤮 required"
+              }
+            })}
+            name="country"
+            placeholder="이름"
+          />
+          <p>{errors.country?.message}</p>
+          <button>가자!</button>
+        </form>
+      </div>
+      <div>
+        <ListWarpper>
+          {wishlist.map((country) => (
+            <List key={country.id} {...country} />
+          ))}
+        </ListWarpper>
+        <h1>내가 가본 나라들</h1>
+        <ListWarpper>
+          {visited.map((country) => (
+            <List key={country.id} {...country} />
+          ))}
+        </ListWarpper>
+        <h1>내가 좋아하는 나라들</h1>
+        <ListWarpper>
+          {favorite.map((country) => (
+            <List key={country.id} {...country} />
+          ))}
+        </ListWarpper>
+      </div>
     </Container>
   );
 }
 
 const Container = styled.div`
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
-  text-align: left;
-
-  form > button, input {
-    width: 250px;
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 `;
+
+const ListWarpper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 350px;
+  overflow: scroll;
+`
